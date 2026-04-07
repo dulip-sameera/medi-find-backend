@@ -50,7 +50,7 @@ services:
       POSTGRES_USER: ${DB_USER}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
     ports:
-      - "${PATIENT_PORT}:5434"
+      - "${PATIENT_PORT}:5432"
     volumes:
       - patient_data:/var/lib/postgresql/data
       - ./db/patient/init.sql:/docker-entrypoint-initdb.d/init.sql
