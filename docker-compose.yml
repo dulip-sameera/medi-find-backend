@@ -1,4 +1,67 @@
 services:
+  # --- Infrastructure Services ---
+
+  config-server:
+    build:
+      context: ./config-server
+      dockerfile: Dockerfile
+    container_name: config-server
+    ports:
+      - "8888:8888"
+    env_file:
+      - ./config-server/.env
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8888/actuator/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    networks:
+      - medifind-network
+
+  eureka-server:
+    build:
+      context: ./eureka-server
+      dockerfile: Dockerfile
+    container_name: eureka-server
+    ports:
+      - "8761:8761"
+    environment:
+      # Tells the Eureka Config Client where to find the server
+      - CONFIG_SERVER_URL=http://config-server:8888
+    depends_on:
+      config-server:
+        condition: service_healthy # Wait until Config Server passes its health check
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8761/actuator/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    networks:
+      - medifind-network
+    
+  api-gateway:
+    build: ./api-gateway
+    container_name: api-gateway
+    ports:
+      - "8080:8080"
+    environment:
+      - CONFIG_SERVER_URL=http://config-server:8888
+    depends_on:
+      eureka-server:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    networks:
+      - medifind-network
+
+  # --- Databases ---
+
   auth-db:
     image: postgres:15-alpine
     container_name: medifind_auth_db
@@ -12,6 +75,8 @@ services:
     volumes:
       - auth_data:/var/lib/postgresql/data
       - ./db/auth/init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - medifind-network
 
   medicine-db:
     image: postgres:15-alpine
@@ -26,6 +91,8 @@ services:
     volumes:
       - medicine_data:/var/lib/postgresql/data
       - ./db/medicine/init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - medifind-network
 
   pharmacy-db:
     image: postgres:15-alpine
@@ -40,6 +107,8 @@ services:
     volumes:
       - pharmacy_data:/var/lib/postgresql/data
       - ./db/pharmacy/init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - medifind-network
 
   patient-db:
     image: postgres:15-alpine
@@ -54,6 +123,15 @@ services:
     volumes:
       - patient_data:/var/lib/postgresql/data
       - ./db/patient/init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - medifind-network
+
+# --- Networks ---
+networks:
+  medifind-network:
+    driver: bridge
+
+# --- DB Volumes ---
 
 volumes:
   auth_data:
