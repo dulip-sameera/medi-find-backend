@@ -1,0 +1,62 @@
+services:
+  auth-db:
+    image: postgres:15-alpine
+    container_name: medifind_auth_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: auth_db
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - "${AUTH_PORT}:5432"
+    volumes:
+      - auth_data:/var/lib/postgresql/data
+      - ./db/auth/init.sql:/docker-entrypoint-initdb.d/init.sql
+
+  medicine-db:
+    image: postgres:15-alpine
+    container_name: medifind_medicine_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: medicine_db
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - "${MEDICINE_PORT}:5432"
+    volumes:
+      - medicine_data:/var/lib/postgresql/data
+      - ./db/medicine/init.sql:/docker-entrypoint-initdb.d/init.sql
+
+  pharmacy-db:
+    image: postgres:15-alpine
+    container_name: medifind_pharmacy_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: pharmacy_db
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - "${PHARMACY_PORT}:5432"
+    volumes:
+      - pharmacy_data:/var/lib/postgresql/data
+      - ./db/pharmacy/init.sql:/docker-entrypoint-initdb.d/init.sql
+
+  patient-db:
+    image: postgres:15-alpine
+    container_name: medifind_patient_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: patient_db
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - "${PATIENT_PORT}:5434"
+    volumes:
+      - patient_data:/var/lib/postgresql/data
+      - ./db/patient/init.sql:/docker-entrypoint-initdb.d/init.sql
+
+volumes:
+  auth_data:
+  medicine_data:
+  pharmacy_data:
+  patient_data:
