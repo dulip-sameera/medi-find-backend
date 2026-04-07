@@ -10,7 +10,7 @@ CREATE TABLE IF NOT EXISTS nmra_medicine (
     
     -- Lean Audit Columns
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 -- 2. Indexing for high-performance searching
