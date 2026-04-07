@@ -11,7 +11,12 @@ CREATE TABLE IF NOT EXISTS users (
     password VARCHAR(255) NOT NULL,
     role_id INTEGER NOT NULL,
     
-    -- Defining the foreign key relationship
+    -- --- Log Friendly / Audit Columns ---
+    is_active BOOLEAN DEFAULT TRUE,          -- Soft delete
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- When the user joined
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Last profile change
+    last_login_at TIMESTAMP,                 -- Track user activity
+    
     CONSTRAINT fk_role
         FOREIGN KEY(role_id) 
         REFERENCES roles(id)
