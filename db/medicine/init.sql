@@ -7,7 +7,10 @@ CREATE TABLE IF NOT EXISTS nmra_medicine (
         
     generic_name VARCHAR(255) NOT NULL, 
     brand_name VARCHAR(255) NOT NULL,   
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    
+    -- Lean Audit Columns
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 );
 
 -- 2. Indexing for high-performance searching
