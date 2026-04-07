@@ -3,7 +3,7 @@ server:
 
 spring:
   application:
-    name: config-server
+    name: ${APP_NAME}
   
   cloud:
     config:
@@ -23,7 +23,7 @@ spring:
           # Force pull to ensure the server always has the latest config
           force-pull: true
 
-# Enable Actuator endpoints to check health (Optional but recommended)
+# Enable Actuator endpoints to check health
 management:
   endpoints:
     web:
