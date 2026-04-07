@@ -15,6 +15,9 @@ RUN mvn clean package -DskipTests
 FROM eclipse-temurin:17-jre-alpine
 WORKDIR /app
 
+# Install curl so the healthcheck works
+RUN apk add --no-cache curl
+
 # Copy only the compiled .jar file from the build stage
 COPY --from=build /app/target/*.jar config-server.jar
 

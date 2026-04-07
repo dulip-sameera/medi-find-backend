@@ -9,6 +9,10 @@ RUN mvn clean package -DskipTests
 # Stage 2: Runtime
 FROM eclipse-temurin:17-jre-alpine
 WORKDIR /app
+
+# Install curl so the healthcheck works
+RUN apk add --no-cache curl
+
 COPY --from=build /app/target/*.jar eureka-server.jar
 
 # Standard Eureka Port
