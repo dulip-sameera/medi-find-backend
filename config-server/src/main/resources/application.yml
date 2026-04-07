@@ -1,0 +1,31 @@
+server:
+  port: ${CONFIG_SERVER_PORT:8888}
+
+spring:
+  application:
+    name: config-server
+  
+  cloud:
+    config:
+      server:
+        git:
+          # Your Private GitHub Repo URI
+          uri: https://github.com/dulip-sameera/medifind-config-repo.git
+          
+          # These variables are pulled from your config-server/.env file
+          username: ${GITHUB_USERNAME}
+          password: ${GITHUB_PAT}
+          
+          # Recommended settings for stability
+          clone-on-start: true
+          default-label: main
+          
+          # Force pull to ensure the server always has the latest config
+          force-pull: true
+
+# Enable Actuator endpoints to check health (Optional but recommended)
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "health,info"
