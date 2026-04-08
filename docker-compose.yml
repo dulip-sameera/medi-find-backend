@@ -87,6 +87,27 @@ services:
     networks:
       - medifind-network
 
+  medicine-service:
+    build:
+      context: ./medicine-service
+      dockerfile: Dockerfile
+    container_name: medicine-service
+    ports:
+      - "8083:8083"
+    env_file:
+      - ./medicine-service/.env
+    environment:
+      - CONFIG_SERVER_URL=http://config-server:8888
+    depends_on:
+      config-server:
+        condition: service_healthy
+      eureka-server:
+        condition: service_healthy
+      medicine-db:
+        condition: service_started
+    networks:
+      - medifind-network
+
   # --- Databases ---
 
   auth-db:
