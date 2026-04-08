@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import dev.dulipsameera.auth_service.dto.AuthResponse;
+import dev.dulipsameera.auth_service.dto.LoginRequest;
 import dev.dulipsameera.auth_service.dto.RegisterRequest;
 import dev.dulipsameera.auth_service.service.AuthService;
 import jakarta.validation.Valid;
@@ -24,9 +25,9 @@ public class AuthController {
         return ResponseEntity.ok(authService.register(request));
     }
 
-    // @PostMapping("/login")
-    // public ResponseEntity<AuthResponse> login(@RequestBody LoginRequest request) {
-    //     return ResponseEntity.ok(authService.login(request));
-    // }
+    @PostMapping("/login")
+    public ResponseEntity<AuthResponse> login(@RequestBody LoginRequest request) {
+        return ResponseEntity.ok(authService.login(request));
+    }
 
 }

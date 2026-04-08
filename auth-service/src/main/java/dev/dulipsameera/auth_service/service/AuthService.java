@@ -4,6 +4,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import dev.dulipsameera.auth_service.dto.AuthResponse;
+import dev.dulipsameera.auth_service.dto.LoginRequest;
 import dev.dulipsameera.auth_service.dto.RegisterRequest;
 import dev.dulipsameera.auth_service.model.Role;
 import dev.dulipsameera.auth_service.model.User;
@@ -52,4 +53,27 @@ public class AuthService {
             savedUser.getUsername()
         );
     }
+
+    public AuthResponse login(LoginRequest request) {
+    // 1. Find user by username
+    User user = userRepository.findByUsername(request.username())
+            .orElseThrow(() -> new RuntimeException("Invalid username or password"));
+
+    // 2. Verify password
+    // matches(plainTextFromRequest, hashedEncodedPasswordFromDB)
+    if (!passwordEncoder.matches(request.password(), user.getPassword())) {
+        throw new RuntimeException("Invalid username or password");
+    }
+
+    // 3. Generate Token
+    String token = jwtService.generateToken(user.getUsername());
+
+    // 4. Build and return the full response
+    return new AuthResponse(
+        token,
+        user.getRole().getName(),
+        user.getId(),
+        user.getUsername()
+    );
+}
 }
